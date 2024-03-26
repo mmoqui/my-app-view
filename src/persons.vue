@@ -23,6 +23,7 @@ fetchAllPersons()
 
 <template>
   <div>
+      <h1>All registered persons</h1>
       <div v-if="persons.length" class="row">
           <div v-for="person in persons" :key="person.lastname" class="col-lg-6">
               <p>{{ person.firstname }} {{ person.lastname}}</p>
