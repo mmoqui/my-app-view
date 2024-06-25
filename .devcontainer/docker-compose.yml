@@ -1,0 +1,62 @@
+version: "3.9"
+
+services:
+  my-project:
+    image: mcr.microsoft.com/devcontainers/base:bookworm
+    container_name: my-project
+    stdin_open: true
+    tty: true
+    privileged: true
+    command: /bin/bash
+    environment:
+      - DISPLAY=${DISPLAY}
+    volumes:
+      - ${HOME}/.ssh:/home/myuser/.ssh
+      - ${HOME}/.gnupg:/home/myuser/.gnupg
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.2
+
+  my-project-backend:
+    image: my-app-node:latest
+    container_name: my-project-backend
+    environment:
+      - USER=${DB_USER}
+      - PASSWORD=${DB_PASSWORD}
+      - DATABASE=${DB_NAME}
+    depends_on:
+      - my-project-database
+    links:
+      - my-project-database:database
+    ports:
+      - 3000:80
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.10
+
+  my-project-database:
+    image: postgres:latest
+    container_name: my-project-database
+    environment:
+      - POSTGRES_USER=${DB_USER}
+      - POSTGRES_PASSWORD=${DB_PASSWORD}
+    volumes:
+      - my-database-data:/var/lib/postgresql/data
+      - ./init.sql:/docker-entrypoint-initdb.d/init.sql
+    networks:
+      my-network:
+        ipv4_address: 172.20.0.11
+
+volumes:
+  my-database-data:
+    name: my-database-data
+
+networks:
+  my-network:
+    name: my-network
+    driver: bridge
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.20.0.0/24
+          gateway: 172.20.0.1
