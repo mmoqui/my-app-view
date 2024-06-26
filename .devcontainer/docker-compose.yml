@@ -13,6 +13,7 @@ services:
     volumes:
       - ${HOME}/.ssh:/home/myuser/.ssh
       - ${HOME}/.gnupg:/home/myuser/.gnupg
+      - ${HOME}/.gitconfig:/home/myuser/.gitconfig
     networks:
       my-network:
         ipv4_address: 172.20.0.2

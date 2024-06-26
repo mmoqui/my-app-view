@@ -9,12 +9,12 @@ async function fetchAllPersons() {
     const res = await fetch('/persons')
     let data = await res.json()
     if (!res.ok) {
-      error.value = "Impossible d'obtenir la liste des personnes"
+      error.value = `Impossible d'obtenir la liste des personnes`
     } else {
       persons.value = data
     }
   } catch(err) {
-    error.value = "Impossible d'accéder à la source de données"
+    error.value = "Impossible d'accéder à la source de données. " + err
   }
 }
 
@@ -23,9 +23,9 @@ fetchAllPersons()
 
 <template>
   <div>
-      <h1>All registered persons</h1>
-      <div v-if="persons.length" class="row">
-          <div v-for="person in persons" :key="person.lastname" class="col-lg-6">
+      <h2 class="mybg">All registered persons:</h2>
+      <div v-if="persons.length">
+          <div v-for="person in persons" :key="person.lastname" class="row col-lg-6">
               <p>{{ person.firstname }} {{ person.lastname}}</p>
           </div>
       </div>
